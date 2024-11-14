@@ -73,7 +73,9 @@ const Tivosocial = () => {
         const userRef = doc(db, "Users", loggedInUserUid);
         await updateDoc(userRef, {
           friends: arrayUnion(email), // Add email to the friends array
+          
         });
+        fetchFriends();
 
         // Add the logged-in user's email to the friend's friend list
         const friendRef = doc(db, "Users", email);
@@ -84,6 +86,7 @@ const Tivosocial = () => {
         // Update local state to reflect the change
         setFriends((prevFriends) => [...prevFriends, email]);
         console.log("Friend added successfully!");
+        
       } catch (error) {
         console.error("Error adding friend:", error);
       }

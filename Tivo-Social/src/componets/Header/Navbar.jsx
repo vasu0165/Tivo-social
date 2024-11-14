@@ -117,6 +117,11 @@ function Navbar(props) {
 
               <div className="ml-auto">
                 <div className="flex">
+                <div className="flex justify-center items-center mr-5 ">
+      <button className="w-28 h-10 text-lg font-semibold text-white rounded-full transition-all duration-300 bg-gradient-to-r from-[#6253e1] via-[#852D91] to-[#F24645] hover:bg-[length:300%_100%] hover:bg-right shadow-lg shadow-purple-500/75 focus:outline-none">
+        Tivo Social
+      </button>
+    </div>
                   {/* Search Icon */}
                   <Link to={"/search"}>
                     <svg

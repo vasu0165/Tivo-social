@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../Firebase/FirebaseConfig";
-import { collection, query, where, getDocs, updateDoc, doc, arrayUnion } from "firebase/firestore";
+import { collection, query, where, getDocs,getDoc, updateDoc, doc, arrayUnion } from "firebase/firestore";
 import { getAuth } from "firebase/auth"; // To get the logged-in user's UID
 import UsersList from "./UserList";
 
@@ -46,6 +46,7 @@ const Tivosocial = () => {
       setLoggedInUserUid(user.uid); // Set logged-in user UID
       try {
         // Correct syntax to get a document by its ID in the latest Firebase version
+        console.log(user.uid);
         const userRef = doc(db, "Users", user.uid);
         const userDoc = await getDoc(userRef);
   

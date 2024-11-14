@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../Firebase/FirebaseConfig";
-import { collection, query, where, getDocs,getDoc, updateDoc, doc, arrayUnion } from "firebase/firestore";
-import { getAuth } from "firebase/auth"; // To get the logged-in user's UID
-import UsersList from "./UserList";
+import { collection, query, where, getDocs, getDoc, updateDoc, doc, arrayUnion ,  arrayRemove} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const Tivosocial = () => {
-  const [searchQuery, setSearchQuery] = useState(""); // Search input state
-  const [users, setUsers] = useState([]); // List of users
-  const [friends, setFriends] = useState([]); // List of added friends
-  const [loggedInUserUid, setLoggedInUserUid] = useState(null); // Store logged-in user's UID
+  const [searchQuery, setSearchQuery] = useState("");
+  const [users, setUsers] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [loggedInUserUid, setLoggedInUserUid] = useState(null);
 
-  // Fetch users based on search query
   const fetchUsers = async (queryString) => {
     if (queryString.trim() === "") {
-      setUsers([]); // If search query is empty, reset the users list
+      setUsers([]);
       return;
     }
 
     const usersRef = collection(db, "Users");
-    // Construct query for case-insensitive search by email
     const q = query(
       usersRef,
-      where("email", ">=", queryString),  // Start query from queryString
-      where("email", "<=", queryString + "\uf8ff") // End query with a wildcard character
+      where("email", ">=", queryString),
+      where("email", "<=", queryString + "\uf8ff")
     );
 
     const querySnapshot = await getDocs(q);
@@ -30,29 +27,24 @@ const Tivosocial = () => {
     setUsers(usersList);
   };
 
-  // Trigger search on input change
   const handleSearchChange = (e) => {
     const queryString = e.target.value;
     setSearchQuery(queryString);
-    fetchUsers(queryString); // Fetch filtered users based on the search input
+    fetchUsers(queryString);
   };
 
-  // Fetch the logged-in user's friends from Firestore
   const fetchFriends = async () => {
     const auth = getAuth();
     const user = auth.currentUser;
-  
+
     if (user) {
-      setLoggedInUserUid(user.uid); // Set logged-in user UID
+      setLoggedInUserUid(user.uid);
       try {
-        // Correct syntax to get a document by its ID in the latest Firebase version
-        console.log(user.uid);
         const userRef = doc(db, "Users", user.uid);
         const userDoc = await getDoc(userRef);
-  
+
         if (userDoc.exists()) {
-          setFriends(userDoc.data().friends || []); // Set friends from Firestore or empty array
-          console.log("Fetched friends:", userDoc.data().friends);
+          setFriends(userDoc.data().friends || []);
         } else {
           console.log("No user document found!");
         }
@@ -61,88 +53,115 @@ const Tivosocial = () => {
       }
     }
   };
-
-  // Handle adding a friend
+  const handleRemoveFriend = async (friendEmail) => {
+    if (!loggedInUserUid) return;
+  
+    try {
+      const userRef = doc(db, "Users", loggedInUserUid);
+      await updateDoc(userRef, {
+        friends: arrayRemove(friendEmail), // Remove the friend from the user's friends array
+      });
+  
+      const friendRef = doc(db, "Users", friendEmail);
+      fetchFriends();
+      await updateDoc(friendRef, {
+        friends: arrayRemove(loggedInUserUid), // Remove the logged-in user from the friend's list
+      });
+      setFriends((prevFriends) => prevFriends.filter((friend) => friend !== friendEmail)); // Update local state
+      console.log("Friend removed successfully!");
+    } catch (error) {
+      console.error("Error removing friend:", error);
+    }
+  };
+  
   const handleAddFriend = async (email) => {
     if (!loggedInUserUid) return;
 
-    // Check if the user already added the friend
     if (!friends.includes(email)) {
       try {
-        // Update the current user's friends list in Firestore
         const userRef = doc(db, "Users", loggedInUserUid);
         await updateDoc(userRef, {
-          friends: arrayUnion(email), // Add email to the friends array
-          
+          friends: arrayUnion(email),
         });
         fetchFriends();
 
-        // Add the logged-in user's email to the friend's friend list
         const friendRef = doc(db, "Users", email);
         await updateDoc(friendRef, {
-          friends: arrayUnion(loggedInUserUid), // Add logged-in user to the friend's array
+          friends: arrayUnion(loggedInUserUid),
         });
 
-        // Update local state to reflect the change
         setFriends((prevFriends) => [...prevFriends, email]);
-        console.log("Friend added successfully!");
-        
       } catch (error) {
         console.error("Error adding friend:", error);
       }
     }
   };
 
-  // Fetch friends on component mount or when user logs in
   useEffect(() => {
     fetchFriends();
   }, []);
 
   return (
-    <div className="flex flex-col items-center p-4">
-      <h1 className="text-2xl font-bold text-white mb-4">Tivo Social</h1>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-900 via-purple-800 to-gray-900">
+      <div className="w-full max-w-lg p-6 bg-white rounded-lg shadow-lg">
+        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">TiVo Social</h1>
 
-      {/* Search Bar */}
-      <input
-        type="text"
-        placeholder="Search by email"
-        value={searchQuery}
-        onChange={handleSearchChange}
-        className="p-2 border-2 border-gray-300 rounded-lg mb-4"
-      />
+        {/* Search Bar */}
+        <input
+          type="text"
+          placeholder="Search by email"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 mb-4"
+        />
 
-      {/* List of Filtered Users */}
-      <div className="w-full">
-        {users.length > 0 ? (
-          users.map((user) => (
-            <div key={user.uid} className="flex justify-between items-center p-2 border-b border-gray-300">
-              <span className="text-white">{user.email}</span>
-              <button
-                onClick={() => handleAddFriend(user.email)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md"
-              >
-                Add Friend
-              </button>
-            </div>
-          ))
-        ) : (
-          <p className="text-white">No users found.</p>
-        )}
+        {/* List of Filtered Users */}
+        <div className="w-full mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-2">Search Results</h2>
+          {users.length > 0 ? (
+            users.map((user) => (
+              <div key={user.uid} className="flex justify-between items-center p-2 border-b border-gray-300">
+                <span className="text-gray-800">{user.email}</span>
+                <button
+                  onClick={() => handleAddFriend(user.email)}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                >
+                  Add Friend
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-600">No users found.</p>
+          )}
+        </div>
+
+        {/* Friend List */}
+        <div className="w-full max-w-xl mx-auto mt-8 bg-white p-6 rounded-lg shadow-lg">
+  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Friends List</h2>
+
+  {friends.length > 0 ? (
+    friends.map((friend, index) => (
+      <div
+        key={index}
+        className="flex justify-between items-center p-4 mb-3 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition duration-300"
+      >
+        {/* Display only the part of the email before "@" */}
+        <span className="text-lg font-medium text-gray-800">{friend.split('@')[0]}</span>
+
+        <button
+          onClick={() => handleRemoveFriend(friend)}
+          className="px-4 py-2 bg-red-500 text-white rounded-md text-sm font-semibold hover:bg-red-600 transition duration-200"
+        >
+          Remove
+        </button>
       </div>
+    ))
+  ) : (
+    <p className="text-gray-500">No friends added yet.</p>
+  )}
+</div>
 
-      {/* Friend List */}
-      {/* <UsersList></UsersList> */}
-      <div className="mt-6 w-full">
-        <h2 className="text-xl font-semibold text-white mb-4">Friends List</h2>
-        {friends.length > 0 ? (
-          friends.map((friend, index) => (
-            <div key={index} className="flex justify-between items-center p-2 border-b border-gray-300">
-              <span className="text-white">{friend}</span>
-            </div>
-          ))
-        ) : (
-          <p className="text-white">No friends added yet.</p>
-        )}
+
       </div>
     </div>
   );

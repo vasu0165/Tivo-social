@@ -13,6 +13,7 @@ const ErrorPage = lazy(() => import("./Pages/ErrorPage"));
 const Play = lazy(() => import("./Pages/Play"));
 const LikedMovies = lazy(() => import("./Pages/LikedMovies"));
 const History = lazy(() => import("./Pages/History"));
+const Tivosocial = lazy(() => import("./Pages/Tivosocial"));
 
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthContext } from "./Context/UserContext";
@@ -43,6 +44,7 @@ function App() {
               <Route path="/series" element={<Series />} />
               <Route path="/search" element={<Search />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/tivosocial" element={<Tivosocial/>} />
               <Route path="/mylist" element={<MyList />} />
               <Route path="/liked" element={<LikedMovies />} />
               <Route path="/history" element={<History />} />

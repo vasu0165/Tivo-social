@@ -130,8 +130,8 @@ function SignIn() {
                 <h1 className="text-xl font-bold leading-tight tracking-tight text-white md:text-2xl dark:text-white">
                   Sign in to your account
                 </h1>
-                <h1 className="text-white text-2xl p-3 text-center border-2 border-red-700 rounded-sm">
-                  Not Real Netflix
+                <h1 className="text-white text-2xl p-3 text-center border-2 border-cyan-700 rounded-sm">
+                  Watch Your Favourite Shows
                 </h1>
                 <form
                   onSubmit={handleSubmit}
@@ -227,7 +227,7 @@ function SignIn() {
                     className={`w-full text-white ${
                       loader
                         ? `bg-stone-700`
-                        : `bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-primary-300`
+                        : `bg-cyan-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-primary-300`
                     } transition ease-in-out font-medium rounded-sm text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800`}
                   >
                     {loader ? <ClipLoader color="#ff0000" /> : `Sign in`}
@@ -237,7 +237,7 @@ function SignIn() {
                     className={`flex justify-center items-center w-full text-white ${
                       loader
                         ? `bg-stone-700`
-                        : `bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300`
+                        : `bg-gray-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-primary-300`
                     } transition ease-in-out font-medium rounded-sm text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:focus:ring-primary-800`}
                   >
                     {loader ? (

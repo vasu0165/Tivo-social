@@ -27,15 +27,15 @@ function NavbarWithoutUser() {
       >
         <div className="w-9/12 md:w-11/12">
           <img
-            className="h-8 sm:h-10 sm:w-18 ml-8 cursor-pointer"
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/1920px-Netflix_2015_logo.svg.png"
-            alt="NETFLIX"
+            className="h-8 sm:h-14  ml-8 cursor-pointer"
+            src="src\assets\Tivo.png"
+            alt="TiVo"
           />
         </div>
 
         <div>
           <Link to="/signin">
-            <button className="bg-red-600 px-8 rounded-sm py-2 text-white text-base font-bold mr-4 lg:mr-0">
+            <button className="bg-cyan-500	 px-8 rounded-sm py-2 text-white text-base font-bold mr-4 lg:mr-0">
               Login
             </button>
           </Link>

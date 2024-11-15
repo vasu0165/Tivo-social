@@ -1,5 +1,4 @@
-import React from "react";
-import { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Banner from "../componets/Banner/Banner";
 import Footer from "../componets/Footer/Footer";
 import RowPost from "../componets/RowPost/RowPost";
@@ -23,7 +22,7 @@ import ProductionHouse from "../componets/ProductionHouse";
 function Home() {
   const { User } = useContext(AuthContext);
   const [watchedMovies, setWatchedMovies] = useState([]);
-  const [reMovies, setreMovies] = useState([]);
+  const [reMovies, setReMovies] = useState([]);
 
   useEffect(() => {
     getDoc(doc(db, "WatchedMovies", User.uid)).then((result) => {
@@ -32,38 +31,38 @@ function Home() {
         setWatchedMovies(mv.movies);
       }
     });
-  });
+  }, [User.uid]);
 
   useEffect(() => {
     getDoc(doc(db, "Recommended", User.uid)).then((result) => {
       if (result.exists()) {
         const mv = result.data();
-        setreMovies(mv.movies);
+        setReMovies(mv.movies);
       }
     });
-  });
+  }, [User.uid]);
 
   return (
     <div>
       <Banner url={trending}></Banner>
       <div className="div pb-20 pt-10">
-      <ProductionHouse></ProductionHouse>
+        <ProductionHouse></ProductionHouse>
       </div>
       <div className="w-[99%] ml-1 pt-20">
         <RowPost first title="Trending" url={trending} key={trending}></RowPost>
         <RowPost title="Animated" url={Animated} key={Animated}></RowPost>
-        {watchedMovies.length != 0 ? (
+        {watchedMovies.length !== 0 ? (
           <RowPost
             title="Watched Movies"
-            movieData={watchedMovies}
+            movieData={watchedMovies.slice().reverse()} // Use slice() to avoid mutating the state
             key={"Watched Movies"}
           ></RowPost>
         ) : null}
-        {watchedMovies.length != 0 ? (
+        {reMovies.length !== 0 ? (
           <RowPost
             title="Follow your Friends"
-            movieData={reMovies}
-            key={"Watched Movies"}
+            movieData={reMovies.slice().reverse()} // Use slice() to avoid mutating the state
+            key={"Follow your Friends"}
           ></RowPost>
         ) : null}
         <RowPost

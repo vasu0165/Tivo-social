@@ -21,7 +21,7 @@ function Navbar(props) {
     return () => {
       window.removeEventListener("scroll", transitionNavBar);
     };
-  }, []);
+  });
   const [isOpen, setIsOpen] = useState(false);
 
   const [show, handleShow] = useState(false);

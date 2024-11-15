@@ -240,21 +240,6 @@ const Tivosocial = () => {
           )}
         </div>
 
-        {/* Friend UIDs Section */}
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">Your Friends' UIDs</h3>
-          <div className="space-y-2">
-            {friendUIDs.length > 0 ? (
-              friendUIDs.map((friendUid, index) => (
-                <div key={index} className="flex justify-between items-center bg-gray-50 p-2 rounded-lg shadow-sm">
-                  <span className="text-gray-800">UID: {friendUid}</span> {/* Display the userId (UID) */}
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-600">No friends' UIDs available.</p>
-            )}
-          </div>
-        </div>
 
         {/* Friend List */}
         <div className="w-full max-w-xl mx-auto mt-8 bg-white p-6 rounded-lg shadow-lg">
@@ -265,7 +250,7 @@ const Tivosocial = () => {
                 key={index}
                 className="flex justify-between items-center p-4 mb-3 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition duration-300"
               >
-                <span className="text-lg font-medium text-gray-800">{email}</span> {/* Display email here */}
+                <span className="text-lg font-medium text-gray-800">{email.split("@")[0]}</span> {/* Display email here */}
                 <button
                   onClick={() => handleRemoveFriend(friendUIDs[index])}
                   className="px-4 py-2 bg-red-500 text-white rounded-md text-sm font-semibold hover:bg-red-600 transition duration-200"

@@ -56,7 +56,7 @@ function Navbar(props) {
       <header
         className={
           props.playPage
-            ? "fixed top-0 z-10 w-full backdrop-blur-sm"
+            ? "fixed top-0 z-10 w-full backdrop-blur"
             : "fixed top-0 z-10 w-full"
         }
       >

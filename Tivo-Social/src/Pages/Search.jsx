@@ -59,7 +59,7 @@ function Search() {
         ></input>
         <button
           onClick={Search}
-          class="flex items-center px-8 text-white bg-red-800 -ml-2 focus:outline-none focus:ring-primary-300 transition ease-in-out font-medium rounded text-sm py-1 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+          class="flex items-center px-8 text-white bg-cyan-700 -ml-2 focus:outline-none focus:ring-primary-300 transition ease-in-out font-medium rounded text-sm py-1 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

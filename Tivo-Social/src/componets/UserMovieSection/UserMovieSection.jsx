@@ -44,6 +44,20 @@ function UserMovieSection(props) {
       }
     });
   }
+  async function getMovies(friendUid) {
+    const watchedMoviesRef = collection(db, "WatchedMovies", friendUid, "movies");
+    const moviesSnapshot = await getDocs(watchedMoviesRef);
+    if (moviesSnapshot.empty) {
+      console.log("No movies found for this friend.");
+    } else {
+      moviesSnapshot.forEach(doc => {
+        console.log(doc.id, doc.data());
+      });
+    }
+  }
+  
+  getMovies(friendUid);
+  
 
   useEffect(() => {
     getMovies();

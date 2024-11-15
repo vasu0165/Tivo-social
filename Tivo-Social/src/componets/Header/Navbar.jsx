@@ -119,8 +119,8 @@ function Navbar(props) {
                 <div className="flex">
                 <div className="flex justify-center items-center mr-5 ">
                 <Link to={"/Tivosocial"}>
-      <button className="w-28 h-10 text-lg font-semibold text-white rounded-full transition-all duration-300 bg-gradient-to-r from-[#6253e1] via-[#852D91] to-[#F24645] hover:bg-[length:300%_100%] hover:bg-right shadow-lg shadow-purple-500/75 focus:outline-none">
-        TiVo Social
+      <button className="w-auto text-lg font-semibold text-white rounded-full transition-all duration-300 bg-gradient-to-r from-[#6253e1] via-[#852D91] to-[#F24645] hover:bg-[length:300%_100%] hover:bg-right shadow-lg shadow-purple-500/75 focus:outline-none p-2">
+        TiVo Connect
       </button>
     </Link>
     </div>

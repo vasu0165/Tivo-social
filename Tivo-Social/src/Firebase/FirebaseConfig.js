@@ -3,13 +3,13 @@ import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC5VOP5nP64setyf3zLl08Iay8kcSbZecQ",
-  authDomain: "tivo-social.firebaseapp.com",
-  projectId: "tivo-social",
-  storageBucket: "tivo-social.firebasestorage.app",
-  messagingSenderId: "19904911754",
-  appId: "1:19904911754:web:5d4fff9b0388e3ba9f5073",
-  measurementId: "G-5XBNXPTN2Z"
+  apiKey: "AIzaSyDsSs_uxRAnnoNgg5Dxzm62N682_pWkmcw",
+  authDomain: "tivo-party.firebaseapp.com",
+  projectId: "tivo-party",
+  storageBucket: "tivo-party.firebasestorage.app",
+  messagingSenderId: "494186078386",
+  appId: "1:494186078386:web:f8352d4aebec2282a5e9ab",
+  measurementId: "G-1JL8TL2JVP"
 };
 
 // Initialize Firebase

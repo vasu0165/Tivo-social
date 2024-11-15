@@ -68,7 +68,7 @@ function UserMovieSection(props) {
     } else if (props.from === "LikedMovies") {
       setTitle("Movies you Liked");
     }
-  }, []);
+  });
 
   const removeMovie = (movie) => {
     if (props.from === "MyList") {

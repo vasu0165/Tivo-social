@@ -23,6 +23,7 @@ import ProductionHouse from "../componets/ProductionHouse";
 function Home() {
   const { User } = useContext(AuthContext);
   const [watchedMovies, setWatchedMovies] = useState([]);
+  const [reMovies, setreMovies] = useState([]);
 
   useEffect(() => {
     getDoc(doc(db, "WatchedMovies", User.uid)).then((result) => {
@@ -31,7 +32,16 @@ function Home() {
         setWatchedMovies(mv.movies);
       }
     });
-  }, []);
+  });
+
+  useEffect(() => {
+    getDoc(doc(db, "Recommended", User.uid)).then((result) => {
+      if (result.exists()) {
+        const mv = result.data();
+        setreMovies(mv.movies);
+      }
+    });
+  });
 
   return (
     <div>
@@ -46,6 +56,13 @@ function Home() {
           <RowPost
             title="Watched Movies"
             movieData={watchedMovies}
+            key={"Watched Movies"}
+          ></RowPost>
+        ) : null}
+        {watchedMovies.length != 0 ? (
+          <RowPost
+            title="Follow your Friends"
+            movieData={reMovies}
             key={"Watched Movies"}
           ></RowPost>
         ) : null}

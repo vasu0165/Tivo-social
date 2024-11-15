@@ -107,59 +107,56 @@ const Tivosocial = () => {
   };
   const fetchAndStoreRecommendedMovies = async () => {
     if (!loggedInUserUid || friendUIDs.length === 0) return;
-  
+
     try {
       // Iterate through the list of friends' UIDs
-      
+
       console.log("I am here")
       console.log(friendUIDs)
       for (let friendUid of friendUIDs) {
         // Fetch the watched movies collection of the friend
         const docRef = doc(db, "WatchedMovies", friendUid);
-      const docSnapshot = await getDoc(docRef);
-      if (docSnapshot.exists()) {
-      const movies = docSnapshot.data().movies;  // assuming 'movies' is a field, not a sub-collection
-      console.log(movies);
-      setrMovies(movies);
-} else {
-  console.log("No data found for this friend.");
-}
+        const docSnapshot = await getDoc(docRef);
+        if (docSnapshot.exists()) {
+          const movies = docSnapshot.data().movies;  // assuming 'movies' is a field, not a sub-collection
+          console.log(movies);
+          setrMovies(movies);
+        } else {
+          console.log("No data found for this friend.");
+        }
 
         const watchedMoviesRef = collection(db, "WatchedMovies", friendUid, "xyz");
         const querySnapshot = await getDocs(watchedMoviesRef);
         console.log(querySnapshot)
-  
+
         // Extract the movie data (assuming each document has a "movie" field)
-        const friendMovies = querySnapshot.docs.map((doc) => doc.data());
-  console.log("I am here 2")
-  console.log(friendMovies)
         if (rmovies.length > 0) {
-          console.log("I am here 3")
+          // console.log("I am here 3")
           // Store this friend's movies in the Recommended collection
           const recommendedRef = doc(db, "Recommended", loggedInUserUid); // This stores all recommendations under the logged-in user's UID
           const recommendedDoc = await getDoc(recommendedRef);
-  
+
           if (recommendedDoc.exists()) {
             // If the document already exists, we update it with the new friend's movie list
             await updateDoc(recommendedRef, {
-              [friendUid]: arrayUnion(...rmovies), // Add friend's movies to the existing list of recommendations
+              movies: arrayUnion(...rmovies), // Add friend's movies to the existing list of recommendations
             });
           } else {
             // If no document exists, we create a new one with the friend's movies
             await setDoc(recommendedRef, {
-              [friendUid]: rmovies,
+              movies: rmovies,
             });
           }
-  
+
           console.log(`Movies from friend ${friendUid} stored in Recommended collection!`);
-          console.log(friendMovies)
+          // console.log(friendMovies)
         }
       }
     } catch (error) {
       console.error("Error fetching and storing recommended movies:", error);
     }
   };
-  
+
   // Remove a friend
   const handleRemoveFriend = async (friendUid) => {
     if (!loggedInUserUid) return;
@@ -207,7 +204,7 @@ const Tivosocial = () => {
       fetchAndStoreRecommendedMovies();
       // storeFriendUIDsInRecommended(); // Store the UIDs once they are updated
     }
-  }, [friendUIDs]);
+  });
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-900 via-purple-800 to-gray-900">

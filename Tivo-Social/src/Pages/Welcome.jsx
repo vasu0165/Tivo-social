@@ -46,7 +46,7 @@ function Welcome() {
                   className="w-full p-2 py-3 rounded-sm sm:py-4 md:py-5 md:w-3/4"
                 />
                 <Link to={"/signup"}>
-                  <button className="bg-cyan-500	px-4 py-2 mt-3 font-medium text-white bg-black border-slate-300 rounded-sm sm:py-4 md:mt-0 md:pb-5 md:text-xl md:w-1/4">
+                  <button className=" bg-cyan-500	px-4 py-2 mt-3 font-medium text-white bg-black border-slate-300 rounded-sm sm:py-4 md:mt-0 md:pb-5 md:text-xl md:w-1/4">
                     Get Started
                   </button>
                 </Link>

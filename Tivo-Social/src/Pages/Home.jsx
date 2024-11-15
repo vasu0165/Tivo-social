@@ -77,8 +77,8 @@ function Home() {
           key={trendingSeries}
         ></RowPost>
         <RowPost title="Science Fiction" url={SciFi}></RowPost>
-        <RowPost title="Upcoming Movies" url={UpcomingMovies}></RowPost>
-        <RowPost title="Comedy" url={comedy}></RowPost>
+        <RowPost title="Now on Prime" url={UpcomingMovies}></RowPost>
+        <RowPost title="Hotstar Originals" url={comedy}></RowPost>
         <RowPost title="Adventure" url={Adventure}></RowPost>
         <RowPost title="Horror" url={horror}></RowPost>
         <RowPost title="War" url={War}></RowPost>

@@ -12,7 +12,7 @@ import usePlayMovie from "../../CustomHooks/usePlayMovie";
 import useUpdateWatchedMovies from "../../CustomHooks/useUpdateWatchedMovies";
 import useUpdateLikedMovies from "../../CustomHooks/useUpdateLikedMovies";
 import useGenereConverter from "../../CustomHooks/useGenereConverter";
-
+import useUpdatereMovies from "../../CustomHooks/useUpdatereMovies";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper";
 
@@ -25,7 +25,9 @@ function RowPost(props) {
   const { addToMyList, PopupMessage } = useUpdateMylist();
   const { playMovie } = usePlayMovie();
   const { removeFromWatchedMovies, removePopupMessage } =
-    useUpdateWatchedMovies();
+    useUpdateWatchedMovies();  
+  const { removeFromreMovies, removePopupreMessage } =
+    useUpdatereMovies();
   const { addToLikedMovies, LikedMoviePopupMessage } = useUpdateLikedMovies();
   const { convertGenere } = useGenereConverter();
 
@@ -173,7 +175,7 @@ function RowPost(props) {
                         {props.movieData != null ? (
                           <>
                             <div
-                              onClick={() => removeFromWatchedMovies(obj)}
+                              onClick={() => { removeFromWatchedMovies(obj); removeFromreMovies(obj); } }
                               onMouseEnter={() => setshouldPop(false)}
                               onMouseLeave={() => setshouldPop(true)}
                               className="text-white w-9 h-9 border-[2px] rounded-full p-2 mr-1 backdrop-blur-[1px] shadow-md ease-linear transition-all duration-150 hover:text-black hover:bg-white"

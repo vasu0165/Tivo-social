@@ -175,7 +175,11 @@ function RowPost(props) {
                         {props.movieData != null ? (
                           <>
                             <div
-                              onClick={() => { removeFromWatchedMovies(obj); removeFromreMovies(obj); } }
+                              onClick={() => { if (props.title === "Watched Movies") {
+                                removeFromWatchedMovies(obj);
+                              } else if (props.title === "Follow your Friends") {
+                                removeFromreMovies(obj);
+                              } } }
                               onMouseEnter={() => setshouldPop(false)}
                               onMouseLeave={() => setshouldPop(true)}
                               className="text-white w-9 h-9 border-[2px] rounded-full p-2 mr-1 backdrop-blur-[1px] shadow-md ease-linear transition-all duration-150 hover:text-black hover:bg-white"

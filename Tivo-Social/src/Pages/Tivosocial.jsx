@@ -120,7 +120,20 @@ const Tivosocial = () => {
         if (docSnapshot.exists()) {
           const movies = docSnapshot.data().movies; // Assuming 'movies' is a field, not a sub-collection
           console.log(movies);
-          newRecommendedMovies = [...newRecommendedMovies, ...movies]; // Add friend's movies to the new list
+  
+          // For each movie, check if it exists in the 'RemovedRecommendation' collection
+          const removedMoviesRef = doc(db, "RemovedRecommendation", loggedInUserUid);
+          const removedMoviesSnapshot = await getDoc(removedMoviesRef);
+  
+          // Filter out movies that are in the 'RemovedRecommendation' collection
+          const removedMovies = removedMoviesSnapshot.exists() ? removedMoviesSnapshot.data().movies || [] : [];
+  
+          const filteredMovies = movies.filter((movie) => {
+            return !removedMovies.some((removedMovie) => removedMovie.id === movie.id);
+          });
+  
+          // Add friend's movies (filtered from removed recommendations) to the new list
+          newRecommendedMovies = [...newRecommendedMovies, ...filteredMovies];
         } else {
           console.log("No data found for this friend.");
         }
@@ -151,6 +164,7 @@ const Tivosocial = () => {
       console.error("Error fetching and storing recommended movies:", error);
     }
   };
+  
   
 
   // Remove a friend

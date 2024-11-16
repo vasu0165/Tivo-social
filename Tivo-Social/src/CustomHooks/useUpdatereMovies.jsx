@@ -1,5 +1,7 @@
 import React, { useContext, useState } from "react";
 import { updateDoc, doc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { getDoc, setDoc } from "firebase/firestore";
+
 import { db } from "../Firebase/FirebaseConfig";
 import { AuthContext } from "../Context/UserContext";
 import toast, { Toaster } from "react-hot-toast";
@@ -9,16 +11,34 @@ function useUpdatereMovies() {
   const [Error, setError] = useState(false);
 
   function notify() {
-    toast.success("  Movie removed from Recommendations List  ");
+    toast.success("Movie removed from Recommendations List");
   }
   function alertError(message) {
     toast.error(message);
   }
-//   const addToWatchedMovies = (movie) => {
-//     updateDoc(doc(db, "WatchedMovies", User.uid), {
-//       movies: arrayUnion(movie),
-//     });
-//   };
+  const addToRemovedRecommendationMovies = async (movie) => {
+    const userDocRef = doc(db, "RemovedRecommendation", User.uid);
+
+  try {
+    // Check if the document already exists
+    const docSnap = await getDoc(userDocRef);
+
+    if (docSnap.exists()) {
+      // If the document exists, update the "movies" array by adding the movie
+      await updateDoc(userDocRef, {
+        movies: arrayUnion(movie),
+      });
+    } else {
+      // If the document does not exist, create a new one with the movie
+      await setDoc(userDocRef, {
+        movies: [movie],
+      });
+    }
+  } catch (error) {
+    console.error("Error updating the removed recommendations:", error);
+  }
+    console.log("added in removed")
+  };
 
   const removeFromreMovies = (movie) => {
     updateDoc(doc(db, "Recommended", User.uid), {
@@ -48,7 +68,7 @@ function useUpdatereMovies() {
     />
   );
 
-  return { removeFromreMovies, removePopupreMessage };
+  return { removeFromreMovies,addToRemovedRecommendationMovies, removePopupreMessage };
 }
 
 export default useUpdatereMovies;

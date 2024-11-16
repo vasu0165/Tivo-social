@@ -26,7 +26,7 @@ function RowPost(props) {
   const { playMovie } = usePlayMovie();
   const { removeFromWatchedMovies, removePopupMessage } =
     useUpdateWatchedMovies();  
-  const { removeFromreMovies, removePopupreMessage } =
+  const { removeFromreMovies, addToRemovedRecommendationMovies, removePopupreMessage } =
     useUpdatereMovies();
   const { addToLikedMovies, LikedMoviePopupMessage } = useUpdateLikedMovies();
   const { convertGenere } = useGenereConverter();
@@ -179,6 +179,7 @@ function RowPost(props) {
                                 removeFromWatchedMovies(obj);
                               } else if (props.title === "Follow your Friends") {
                                 removeFromreMovies(obj);
+                                addToRemovedRecommendationMovies(obj);
                               } } }
                               onMouseEnter={() => setshouldPop(false)}
                               onMouseLeave={() => setshouldPop(true)}

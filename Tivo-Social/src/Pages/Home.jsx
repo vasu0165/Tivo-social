@@ -15,16 +15,34 @@ import {
   UpcomingMovies,
 } from "../Constants/URLs";
 import { doc, getDoc } from "firebase/firestore";
+import { updateDoc, setDoc } from "firebase/firestore";
 import { db } from "../Firebase/FirebaseConfig";
 import { AuthContext } from "../Context/UserContext";
 import ProductionHouse from "../componets/ProductionHouse";
+import { getAuth } from "firebase/auth";
+
 
 function Home() {
   const { User } = useContext(AuthContext);
   const [watchedMovies, setWatchedMovies] = useState([]);
   const [reMovies, setReMovies] = useState([]);
   const [friendUIDs, setFriendUIDs] = useState([]);
+  const [loggedInUserUid, setLoggedInUserUid] = useState(null);
+  const [friends, setFriends] = useState([]);
+  const [friendEmails, setFriendEmails] = useState([]); // To store email of friends
 
+// Function to get emails for friends by their UIDs
+const getFriendEmails = async (friendUIDs) => {
+  const emails = [];
+  for (let uid of friendUIDs) {
+    const userRef = doc(db, "Users", uid);
+    const userDoc = await getDoc(userRef);
+    if (userDoc.exists()) {
+      emails.push(userDoc.data().email);
+    }
+  }
+  return emails;
+};
   // Fetch the logged-in user's friends and their UIDs
   const fetchFriends = async () => {
     const auth = getAuth();
@@ -54,9 +72,11 @@ function Home() {
     }
   };
   const fetchAndStoreRecommendedMovies = async () => {
-    if (!loggedInUserUid || friendUIDs.length === 0) return;
+    if (!loggedInUserUid ){
+      console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"); return;}
   
     try {
+      console.log("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
       // Reset the recommended movies array before fetching new data
       let newRecommendedMovies = [];
   
@@ -104,8 +124,13 @@ function Home() {
           });
         }
   
-        console.log("Recommended movies updated in Firestore!");
+        console.log("Recommended movies updated in Firestore! from home");
       } else {
+        const recommendedRef = doc(db, "Recommended", loggedInUserUid);
+        // const recommendedDoc = await getDoc(recommendedRef);
+        await setDoc(recommendedRef, {
+          movies: newRecommendedMovies,
+        });
         console.log("No recommended movies to update.");
       }
     } catch (error) {
@@ -121,7 +146,7 @@ function Home() {
       }
     });
     fetchAndStoreRecommendedMovies();
-  }, [User.uid]);
+  }, [User.uid, friends]);
 
   useEffect(() => {
     getDoc(doc(db, "Recommended", User.uid)).then((result) => {
@@ -130,6 +155,7 @@ function Home() {
         setReMovies(mv.movies);
       }
     });
+    fetchFriends();
   }, [User.uid]);
 
   return (

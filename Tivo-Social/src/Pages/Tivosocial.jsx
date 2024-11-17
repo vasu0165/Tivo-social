@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { db } from "../Firebase/FirebaseConfig";
 import { collection, query, where, getDocs, getDoc, updateDoc, doc, arrayUnion, arrayRemove, setDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { deleteDoc } from "firebase/firestore";
+// import { db } from "../Firebase/FirebaseConfig";
 
 const Tivosocial = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -12,6 +14,22 @@ const Tivosocial = () => {
   const [friendUIDs, setFriendUIDs] = useState([]);
   const [friendEmails, setFriendEmails] = useState([]); // To store email of friends
 
+
+  
+
+const deleteDocument = async (collectionName, documentId) => {
+  try {
+    // Reference the document
+    const docRef = doc(db, collectionName, documentId);
+
+    // Delete the document
+    await deleteDoc(docRef);
+
+    console.log(`Document with ID '${documentId}' from '${collectionName}' collection has been deleted.`);
+  } catch (error) {
+    console.error("Error deleting document:", error);
+  }
+};
   // Fetch users based on search query
   const fetchUsers = async (queryString) => {
     if (queryString.trim() === "") {
@@ -52,7 +70,14 @@ const Tivosocial = () => {
         const userDoc = await getDoc(userRef);
 
         if (userDoc.exists()) {
+          const Updatedfriends = userDoc.data().friends;
+
+          if (Updatedfriends.length==0){
+            deleteDocument("Recommended", loggedInUserUid)
+          }
+          
           setFriends(userDoc.data().friends || []);
+          
           // Fetch the UIDs of friends
           const friendsUIDs = userDoc.data().friends || [];
           setFriendUIDs(friendsUIDs);
@@ -92,7 +117,8 @@ const Tivosocial = () => {
         await updateDoc(userRef, {
           friends: arrayUnion(friendUid),
         });
-        fetchFriends();
+        
+        
 
         const friendRef = doc(db, "Users", friendUid);
         await updateDoc(friendRef, {
@@ -100,18 +126,25 @@ const Tivosocial = () => {
         });
 
         setFriends((prevFriends) => [...prevFriends, friendUid]);
+        fetchFriends();
+        console.log("Will call soon");
       } catch (error) {
         console.error("Error adding friend:", error);
       }
     }
+    
   };
   const fetchAndStoreRecommendedMovies = async () => {
-    if (!loggedInUserUid || friendUIDs.length === 0) return;
+    // await fetchFriends();
+    console.log("loogedin user ",loggedInUserUid);
+    console.log("friends",friendUIDs);
+    if (!loggedInUserUid || friendUIDs.length === 0) { // Replace 'Users' and 'document-id-here' with your collection name and document ID
+      return;}
   
     try {
       // Reset the recommended movies array before fetching new data
       let newRecommendedMovies = [];
-  
+      console.log("In TiVo Social", friendUIDs)
       // Iterate through the list of friends' UIDs
       for (let friendUid of friendUIDs) {
         // Fetch the watched movies collection of the friend
@@ -186,7 +219,9 @@ const Tivosocial = () => {
       console.log("Friend removed successfully!");
   
       // Call fetchAndStoreRecommendedMovies after removing a friend
-      fetchAndStoreRecommendedMovies();  // Trigger the movie fetch and store logic
+      await fetchFriends();
+      // fetchAndStoreRecommendedMovies();
+       // Trigger the movie fetch and store logic
     } catch (error) {
       console.error("Error removing friend:", error);
     }
@@ -210,14 +245,16 @@ const Tivosocial = () => {
 
   useEffect(() => {
     fetchFriends();
-  }); // Fetch friends when component mounts
+  }, []); // Fetch friends when component mounts
 
   useEffect(() => {
     if (friendUIDs.length > 0) {
+      // fetchFriends();
       fetchAndStoreRecommendedMovies();
+      console.log("Tikkkkkk");
       // storeFriendUIDsInRecommended(); // Store the UIDs once they are updated
     }
-  });
+  }, [friends]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-900 via-purple-800 to-gray-900">
